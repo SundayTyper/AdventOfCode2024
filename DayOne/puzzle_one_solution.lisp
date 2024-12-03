@@ -1,0 +1,20 @@
+(defun extract-arrays-from-file (filename)
+  (with-open-file (stream filename :direction :input)
+    (let ((array1 nil)
+          (array2 nil))
+      (loop for line = (read-line stream nil)
+            while line
+            do (let ((numbers (mapcar #'parse-integer (cl-ppcre:split "\\s+" line))))
+                   (push (first numbers) array1)
+                   (push (second numbers) array2)))
+      (values (reverse array1) (reverse array2)))))
+
+(defun order-array-ascending (array)
+  (sort array #'<)
+  )
+
+(defun get-sum-of-differences-between-array-elements (array1 array2)
+  (let (sum nil))
+  for i from 0 to (1- (length array1))
+    do (setq sum (+ sum (abs (- (aref array1 i) (aref array2 i)))))
+  )
