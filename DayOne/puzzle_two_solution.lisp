@@ -17,17 +17,24 @@
   (sort unsorted-list #'<)
   )
 
-(defun get-sum-of-differences-between-list-elements (list1 list2)
-  (let ((sum 0))
-  (loop for i from 0 to (1- (length list1))
-    do (setq sum (+ sum (abs (- (elt list1 i) (elt list2 i))))))
-  sum))
+(defun alter-list-by-similarity (list1 list2)
+  (loop for number1 in list1
+        do ((let ((score 0))
+            (loop for number2 in list2
+                  do (if (number1 == number2)
+                          (incf score)
+                          (if (number1 > number2)
+                              (return))))
+            (setq number1  (* number1 score)))))
+  list1)
+
+(defun sum-list (list)
+  (reduce #'+ list :initial-value 0))
 
 (defun solve ()
   (let ((list1 (first (extract-lists-from-file *filename*)))
         (list2 (second (extract-lists-from-file *filename*))))
-    (print (get-sum-of-differences-between-list-elements
-              (order-list-ascending list1)
-              (order-list-ascending list2)))))
+    (print (sum-list (alter-list-by-similarity (order-list-ascending list1) 
+                                              (order-list-ascending list2))))))
 
-(solve)
+; (solve)
